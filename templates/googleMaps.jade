@@ -1,0 +1,30 @@
+html
+    head
+        link(rel="stylesheet", href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+        style.
+            body .dot{
+                height: 0;
+                width: 0;
+            }
+            #map {
+                height: 100%;
+            }
+    body
+        div#map
+    script. 
+        var marks = !{json_list};
+        var map;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+              center: {lat:51.5034070, lng:-0.1275920},
+              zoom: 3
+            });
+            
+            for (e = 0; e< marks.length; ++e) {
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(marks[e].latitude, marks[e].longitude),
+                    map: map,
+                });
+            }
+        }
+    script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyA_TgK37dvotisC8LV78AXXADgAGKiwZ-Q&callback=initMap')
