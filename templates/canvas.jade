@@ -1,0 +1,77 @@
+html
+    head
+        style.
+            * { 
+                margin: 0; padding: 0; box-sizing: border-box; 
+                
+            }
+            
+            body { 
+                font: 13px Helvetica, Arial; 
+            }
+            
+            #canvas {
+                border: 1px solid red;
+            }
+            
+        script(src="/socket.io/socket.io.js")
+        script(src="//code.jquery.com/jquery-1.11.1.js")
+        
+    body
+        canvas#canvas
+    script.
+            var socket = io();
+
+            $(document).ready(function(){
+                var canvas = document.getElementById('canvas');
+                canvas.width  = 800;
+                canvas.height = 600;
+                var drawing = {ctx: canvas.getContext('2d')};
+
+                // Draw line segment between 'a' and 'b'.
+                function drawLine(a, b, color) {
+                    drawing.ctx.beginPath();
+                    drawing.ctx.strokeStyle = color;
+                    drawing.ctx.moveTo(a.offsetX, a.offsetY);
+                    drawing.ctx.lineTo(b.offsetX, b.offsetY);
+                    drawing.ctx.stroke();
+                };
+                
+                //send click positions and sequence to server
+                var is_drawing = false;
+                $("canvas").on("click", function(i){
+                    is_drawing = !is_drawing;
+                    
+                    var click = {"offsetX": i.offsetX, "offsetY": i.offsetY};
+                    socket.emit('click-position', click);
+                });
+                
+                // Per user id.
+                var last_position = {};
+                var color_map = {};
+                
+                socket.on('click', function(data){
+                    if (data.id in last_position) {
+                        // end point.
+                        delete last_position[data.id];
+                    } else {
+                        // start point.
+                        last_position[data.id] = { "offsetX": data.offsetX, "offsetY": data.offsetY };
+                        color_map[data.id] = data.color;
+                    }
+                });
+
+                // Follow mouse.
+                $("canvas").mousemove(function(e) {
+                    if (is_drawing) {
+                        socket.emit("mousemove", {"offsetX": e.offsetX, "offsetY": e.offsetY});
+                    }
+                });
+                
+                socket.on('mousepaint', function(end_point){
+                    var new_point = {"offsetX": end_point.offsetX, "offsetY": end_point.offsetY};
+                    drawLine(last_position[end_point.id], new_point, color_map[end_point.id]);
+
+                    last_position[end_point.id] = new_point;
+                });
+            });
