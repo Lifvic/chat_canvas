@@ -20,13 +20,13 @@ var user_counter = 0;
 io.on('connection', function(socket){
   var this_user = "user"+user_counter;
   ++user_counter;
-  function getRandomArbitrary(min, max) {
+  function getRandom(min, max) {
     return parseInt(Math.random() * (max - min) + min);
   }
   
-  var r = getRandomArbitrary(0, 255);
-  var g = getRandomArbitrary(0, 255);
-  var b = getRandomArbitrary(0, 255);
+  var r = getRandom(0, 255);
+  var g = getRandom(0, 255);
+  var b = getRandom(0, 255);
   var color = "rgb("+ r+","+g+","+b+")";
 
   socket.on('click-position', function(pos){
@@ -36,6 +36,11 @@ io.on('connection', function(socket){
   socket.on('mousemove', function(move){
     io.emit('mousepaint', {"offsetX": move.offsetX, "offsetY": move.offsetY, "id": this_user});
   });
+  
+  socket.on('image', function(img){
+     socket.broadcast.emit('newimage', img);
+  });
+  
 });
 
 

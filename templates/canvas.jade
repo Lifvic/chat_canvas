@@ -12,6 +12,7 @@ html
             
             #canvas {
                 border: 1px solid red;
+                background-image: url("/liwei_space/images/lined.png");
             }
             
         script(src="/socket.io/socket.io.js")
@@ -19,16 +20,28 @@ html
         
     body
         canvas#canvas
+        form
+            input#upload-input(type="file" name="uploads[]")
+        button(id="download", download="canvas.png") Download Canvas
+        button(id="clearAll") Wipe it all out
     script.
             var socket = io();
-
+            var canvas = document.getElementById("canvas");
+                canvas.width = "400";
+                canvas.height = "300";
+            var upload = document.getElementById("upload-input");
             $(document).ready(function(){
                 var canvas = document.getElementById('canvas');
-                canvas.width  = 800;
-                canvas.height = 600;
                 var drawing = {ctx: canvas.getContext('2d')};
 
                 // Draw line segment between 'a' and 'b'.
+                //I tried using just track mouse movements, but then differnet users' dots can
+                //be connected because canvas is only recogizing that there are mouses moving 
+                //around and it should connect them all
+                //so it was necessary to disintegrate different usre paths
+                //the way I chose to do that is through registering the previous place of the cursor
+                //and stroke between the 
+                
                 function drawLine(a, b, color) {
                     drawing.ctx.beginPath();
                     drawing.ctx.strokeStyle = color;
@@ -74,4 +87,53 @@ html
 
                     last_position[end_point.id] = new_point;
                 });
+                
+                //upload background image and sync with other sockets
+                upload.addEventListener('change', function(e){
+                    var ctx = document.getElementById('canvas').getContext('2d');
+                    // var img = new Image;
+                    // img.src = URL.createObjectURL(e.target.files[0]);
+                    // img.onload = function() {
+                    //     ctx.drawImage(img, 0, 0);
+                    //     console.log(img);
+                    //     socket.emit('image', img);
+                    // }
+                    
+                   var file = e.target.files[0];
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function(i){
+                        socket.emit('image', i.target.result);
+                        var img = new Image();
+                        img.src = ""+i.target.result+"";
+                        ctx.drawImage(img, 0, 0);
+                    }
+                    
+                });
+                //broadcast to other sockets
+                socket.on('newimage',function(Newimage){
+                    var ctx = document.getElementById('canvas').getContext('2d');
+                    var img = new Image();
+                    img.src = ""+Newimage+"";
+                    ctx.drawImage(img, 0, 0);
+                });
+                
+                //Download whatever it's on canvas
+                var download = document.getElementById("download");
+                function downloadCanvas() {
+                    var source = canvas.toDataURL('image/png');
+                    this.href = source.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+                }
+                
+                download.addEventListener('click', downloadCanvas, false);
+                //CLear All on Canvas
+                var clearAll = document.getElementById("clearAll");
+                clearAll.addEventListener('click', function clearAllCanvas() {
+                    var ctx = document.getElementById('canvas').getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                });
+                
+                
             });
+            
+                
