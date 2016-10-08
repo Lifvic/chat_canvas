@@ -1,0 +1,28 @@
+body {
+    margin:0;
+    font: 13px Helvetica, Arial; 
+}
+
+#header {
+    position: fixed;
+    top: 0;
+    height: 120px;
+    width: 100%;
+    background: #eee;
+}
+
+#chat {
+    position: fixed;
+    top: 120px;
+    bottom: 80px;
+    width: 100%;
+    background: #fff;
+}
+
+#inputbar {
+    position: fixed;
+    bottom: 0;
+    height: 80px;
+    width: 100%;
+    background: #eee;
+}

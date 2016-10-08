@@ -1,140 +1,17 @@
 html
     head
-        style.
-            * { 
-                margin: 0; padding: 0; box-sizing: border-box; 
-                
-            }
-            
-            body { 
-                font: 13px Helvetica, Arial; 
-            }
-            
-            #canvas {
-                border: 1px solid red;
-                background-image: url("/liwei_space/images/lined.png");
-            }
-            
+        link(href="/style/canvas.css",rel="stylesheet",type="text/css")
+        
         script(src="/socket.io/socket.io.js")
         script(src="//code.jquery.com/jquery-1.11.1.js")
-        script(src="//cdnjs.cloudflare.com/ajax/libs/babel-core/6.1.19/browser.js")
-        
+        script(src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.min.js")
+        script(src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js")
+        script(src="//cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.17.0/babel.min.js")
+
+        script(type="text/babel" src="/scripts/chat.js")
     body
-        canvas#canvas
-        form
-            input#upload-input(type="file" name="uploads[]")
-        button(id="download", download="canvas.png") Download Canvas
-        button(id="clearAll") Wipe it all out
-    script.
-            var socket = io();
-            var canvas = document.getElementById("canvas");
-                canvas.width = "400";
-                canvas.height = "300";
-            var upload = document.getElementById("upload-input");
-            $(document).ready(function(){
-                var canvas = document.getElementById('canvas');
-                var drawing = {ctx: canvas.getContext('2d')};
-
-                // Draw line segment between 'a' and 'b'.
-                //I tried using just track mouse movements, but then differnet users' dots can
-                //be connected because canvas is only recogizing that there are mouses moving 
-                //around and it should connect them all
-                //so it was necessary to disintegrate different usre paths
-                //the way I chose to do that is through registering the previous place of the cursor
-                //and stroke between the 
-                
-                function drawLine(a, b, color) {
-                    drawing.ctx.beginPath();
-                    drawing.ctx.strokeStyle = color;
-                    drawing.ctx.moveTo(a.offsetX, a.offsetY);
-                    drawing.ctx.lineTo(b.offsetX, b.offsetY);
-                    drawing.ctx.stroke();
-                };
-                
-                //send click positions and sequence to server
-                var is_drawing = false;
-                $("canvas").on("click", function(i){
-                    is_drawing = !is_drawing;
-                    
-                    var click = {"offsetX": i.offsetX, "offsetY": i.offsetY};
-                    socket.emit('click-position', click);
-                });
-                
-                // Per user id.
-                var last_position = {};
-                var color_map = {};
-                
-                socket.on('click', function(data){
-                    if (data.id in last_position) {
-                        // end point.
-                        delete last_position[data.id];
-                    } else {
-                        // start point.
-                        last_position[data.id] = { "offsetX": data.offsetX, "offsetY": data.offsetY };
-                        color_map[data.id] = data.color;
-                    }
-                });
-
-                // Follow mouse.
-                $("canvas").mousemove(function(e) {
-                    if (is_drawing) {
-                        socket.emit("mousemove", {"offsetX": e.offsetX, "offsetY": e.offsetY});
-                    }
-                });
-                
-                socket.on('mousepaint', function(end_point){
-                    var new_point = {"offsetX": end_point.offsetX, "offsetY": end_point.offsetY};
-                    drawLine(last_position[end_point.id], new_point, color_map[end_point.id]);
-
-                    last_position[end_point.id] = new_point;
-                });
-                
-                //upload background image and sync with other sockets
-                upload.addEventListener('change', function(e){
-                    var ctx = document.getElementById('canvas').getContext('2d');
-                    // var img = new Image;
-                    // img.src = URL.createObjectURL(e.target.files[0]);
-                    // img.onload = function() {
-                    //     ctx.drawImage(img, 0, 0);
-                    //     console.log(img);
-                    //     socket.emit('image', img);
-                    // }
-                    
-                   var file = e.target.files[0];
-                    var reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = function(i){
-                        socket.emit('image', i.target.result);
-                        var img = new Image();
-                        img.src = ""+i.target.result+"";
-                        ctx.drawImage(img, 0, 0);
-                    }
-                    
-                });
-                //broadcast to other sockets
-                socket.on('newimage',function(Newimage){
-                    var ctx = document.getElementById('canvas').getContext('2d');
-                    var img = new Image();
-                    img.src = ""+Newimage+"";
-                    ctx.drawImage(img, 0, 0);
-                });
-                
-                //Download whatever it's on canvas
-                var download = document.getElementById("download");
-                function downloadCanvas() {
-                    var source = canvas.toDataURL('image/png');
-                    this.href = source.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
-                }
-                
-                download.addEventListener('click', downloadCanvas, false);
-                //CLear All on Canvas
-                var clearAll = document.getElementById("clearAll");
-                clearAll.addEventListener('click', function clearAllCanvas() {
-                    var ctx = document.getElementById('canvas').getContext('2d');
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                });
-                
-                
-            });
-            
-                
+        div#header
+            p Header
+        div#chat
+        div#inputbar
+            input(type="text")

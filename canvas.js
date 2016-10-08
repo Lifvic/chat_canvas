@@ -7,10 +7,10 @@ var app = express()
   , server = require('http').createServer(app)
   , io = io.listen(server);
 
-app.set("views", path.join(__dirname,"templates"));
+app.set("views", path.join(__dirname, "templates"));
 
-//app.use is a method to server middle ware to everyone
-app.use(express.static("js"));
+// Static files under public/ directory.
+app.use(express.static("public"));
 
 app.get('/', function(req, res){
   res.render('canvas.pug');
