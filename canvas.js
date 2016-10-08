@@ -1,5 +1,5 @@
 var express = require("express");
-var jade = require("jade");
+var pug = require("pug");
 var path = require("path");
 var io = require('socket.io');
 
@@ -13,7 +13,7 @@ app.set("views", path.join(__dirname,"templates"));
 app.use(express.static("js"));
 
 app.get('/', function(req, res){
-  res.render('canvas.jade');
+  res.render('canvas.pug');
 });
 
 var user_counter = 0;

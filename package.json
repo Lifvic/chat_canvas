@@ -3,13 +3,14 @@
   "version": "0.0.1",
   "description": "A chat with canvas.",
   "main": "chat_canvas.js",
-  "repository": { "type" : "git",
-                  "url" : "https://github.com/Lifvic/chat_canvas.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lifvic/chat_canvas.git"
   },
   "author": "Liwei Xu <lifvic.xu@gmail.com>",
   "dependencies": {
     "express": "^4.14.0",
-    "jade": "^1.11.0",
+    "pug": "^2.0.0-beta6",
     "socket.io": "^1.4.5"
   }
 }
