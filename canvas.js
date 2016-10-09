@@ -16,33 +16,42 @@ app.get('/', function(req, res){
   res.render('canvas.pug');
 });
 
-var user_counter = 0;
-io.on('connection', function(socket){
-  var this_user = "user"+user_counter;
-  ++user_counter;
-  function getRandom(min, max) {
-    return parseInt(Math.random() * (max - min) + min);
+var user_manager = {
+  active_users: {},
+  user_joined: function(user_id, user_name) {
+    this.active_users[user_id] = user_name;
+    this.broadcast();
+  },
+  user_left: function(user_id) {
+    if (user_id in this.active_users) {
+      delete this.active_users[user_id];
+      this.broadcast();
+    }
+  },
+  broadcast: function() {
+    io.emit('users', this.active_users);
   }
-  
-  var r = getRandom(0, 255);
-  var g = getRandom(0, 255);
-  var b = getRandom(0, 255);
-  var color = "rgb("+ r+","+g+","+b+")";
+};
 
-  socket.on('click-position', function(pos){
-    io.emit('click', {"offsetX": pos.offsetX, "offsetY": pos.offsetY, "id": this_user, "color": color});
+var user_counter = 0;
+var message_counter = 0;
+io.on('connection', function(socket){
+  socket.on('join', function(user_name){
+    var user_id = user_counter++;
+    
+    user_manager.user_joined(user_id, user_name);
+
+    socket.on('disconnect', function() {
+      user_manager.user_left(user_id)
+    });
   });
   
-  socket.on('mousemove', function(move){
-    io.emit('mousepaint', {"offsetX": move.offsetX, "offsetY": move.offsetY, "id": this_user});
+  socket.on('message', function(message){
+    io.emit('message', {text: message,
+                        key: message_counter});
+    ++message_counter;
   });
-  
-  socket.on('image', function(img){
-     socket.broadcast.emit('newimage', img);
-  });
-  
 });
-
 
 server.listen(process.env.PORT);
 

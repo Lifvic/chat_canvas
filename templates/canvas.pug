@@ -4,14 +4,11 @@ html
         
         script(src="/socket.io/socket.io.js")
         script(src="//code.jquery.com/jquery-1.11.1.js")
-        script(src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.min.js")
-        script(src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js")
+        script(src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.js")
+        script(src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.17.0/babel.min.js")
-
-        script(type="text/babel" src="/scripts/chat.js")
     body
-        div#header
-            p Header
-        div#chat
-        div#inputbar
-            input(type="text")
+        div#chatheader
+        div#chatmessages
+        div#chatinput
+        script(type="text/babel" src="/scripts/chat.js")

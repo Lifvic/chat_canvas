@@ -3,7 +3,7 @@ body {
     font: 13px Helvetica, Arial; 
 }
 
-#header {
+#chatheader {
     position: fixed;
     top: 0;
     height: 120px;
@@ -11,7 +11,12 @@ body {
     background: #eee;
 }
 
-#chat {
+.user {
+    border: 1px solid #ccc;
+    padding: 4px;
+}
+
+#chatmessages {
     position: fixed;
     top: 120px;
     bottom: 80px;
@@ -19,7 +24,7 @@ body {
     background: #fff;
 }
 
-#inputbar {
+#chatinput {
     position: fixed;
     bottom: 0;
     height: 80px;
