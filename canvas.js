@@ -33,23 +33,57 @@ var user_manager = {
   }
 };
 
+function getRandomColor() {
+  function getRandomArbitrary(min, max) {
+    return parseInt(Math.random() * (max - min) + min);
+  }
+  
+  var r = getRandomArbitrary(0, 255);
+  var g = getRandomArbitrary(0, 255);
+  var b = getRandomArbitrary(0, 255);
+  var color = "rgb("+ r+","+g+","+b+")";
+  
+  return color;
+}
+
 var user_counter = 0;
 var message_counter = 0;
 io.on('connection', function(socket){
   socket.on('join', function(user_name){
     var user_id = user_counter++;
+    var color = getRandomColor();
     
     user_manager.user_joined(user_id, user_name);
 
     socket.on('disconnect', function() {
       user_manager.user_left(user_id)
     });
-  });
-  
-  socket.on('message', function(message){
-    io.emit('message', {text: message,
-                        key: message_counter});
-    ++message_counter;
+    
+    socket.on('message', function(message){
+      io.emit('message', {text: message,
+                          key: message_counter});
+      ++message_counter;
+    });
+    
+    socket.on('new_canvas', function(){
+      io.emit('new_canvas', "canvas_" + message_counter);
+      ++message_counter;
+    });
+    
+    socket.on('click', function(pos){
+      io.emit('click', {"canvasId": pos.canvasId,
+                        "x": pos.x,
+                        "y": pos.y,
+                        "user_id": user_id,
+                        "color": color});
+    });
+    
+    socket.on('mousemove', function(move){
+      io.emit('mousepaint', {"canvasId": move.canvasId,
+                             "x": move.x,
+                             "y": move.y,
+                             "user_id": user_id});
+    });
   });
 });
 

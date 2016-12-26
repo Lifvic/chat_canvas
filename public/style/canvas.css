@@ -3,6 +3,12 @@ body {
     font: 13px Helvetica, Arial; 
 }
 
+canvas {
+    /* background-color:#d3d3d3; */
+    border: 1px solid red;
+}
+
+
 #chatheader {
     position: fixed;
     top: 0;
@@ -18,6 +24,7 @@ body {
 
 #chatmessages {
     position: fixed;
+    overflow-y: scroll;
     top: 120px;
     bottom: 80px;
     width: 100%;
