@@ -1,10 +1,10 @@
 body {
     margin:0;
     font: 13px Helvetica, Arial; 
+    
 }
 
 canvas {
-    /* background-color:#d3d3d3; */
     border: 1px solid red;
 }
 
@@ -17,7 +17,7 @@ canvas {
     background: #eee;
 }
 
-.user {
+.header_user {
     border: 1px solid #ccc;
     padding: 4px;
 }
@@ -29,6 +29,37 @@ canvas {
     bottom: 80px;
     width: 100%;
     background: #fff;
+}
+
+.message_data {
+   flex: 0 0 80%;
+   padding-left: 1rem;
+}
+
+.message {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 1rem;
+}
+
+.message_user_photo {
+    flex: 0 0 20%;
+    text-align: center;
+}
+
+p {
+    margin: .2rem 0;
+}
+.message_user_name {
+    width: 40%;
+    display: inline-block;
+    font-weight: 700;
+}
+
+.message_time {
+    width: 50%;
+    display: inline-block;
 }
 
 #chatinput {
