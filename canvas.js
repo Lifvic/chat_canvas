@@ -2,6 +2,7 @@ var express = require("express");
 var pug = require("pug");
 var path = require("path");
 var io = require("socket.io");
+var sass_middleware = require("node-sass-middleware")
 
 var app = express()
   , server = require("http").createServer(app)
@@ -9,6 +10,15 @@ var app = express()
 
 app.set("views", path.join(__dirname, "templates"));
 
+// adding the sass middleware
+app.use(
+   sass_middleware({
+       src: path.join(__dirname, "/sass"),
+       dest: path.join(__dirname, "/public/style"),
+       prefix:  "/style",
+       debug: true,
+   })
+);
 // Static files under public/ directory.
 app.use(express.static("public"));
 
@@ -95,5 +105,5 @@ io.on("connection", function(socket){
   });
 });
 
-server.listen(process.env.PORT);
+server.listen(process.env.PORT, process.env.IP);
 

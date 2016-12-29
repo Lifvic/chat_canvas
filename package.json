@@ -10,6 +10,8 @@
   "author": "Liwei Xu <lifvic.xu@gmail.com>",
   "dependencies": {
     "express": "^4.14.0",
+    "node-sass": "^4.1.1",
+    "node-sass-middleware": "^0.10.0",
     "pug": "^2.0.0-beta6",
     "socket.io": "^1.4.5"
   }

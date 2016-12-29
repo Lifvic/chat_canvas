@@ -38,8 +38,9 @@ var ChatCanvas = React.createClass({
   },
   render: function() {
     return (
-      <div><canvas width="400" height="300"
-              id={this.props.canvasId}></canvas></div>
+      <div className="message_canvas">
+        <canvas width="400" height="300" id={this.props.canvasId}></canvas>
+      </div>
       );
   },
   onMouseMove: function(e) {
@@ -115,6 +116,7 @@ var ChatMessages = React.createClass({
   render: function() {
     
     var messages = [];
+    var previous_user_id = null;
     for (var i = 0; i < this.state.messages.length; i++) {
       var message = this.state.messages[i];
       
@@ -125,16 +127,26 @@ var ChatMessages = React.createClass({
         content = <ChatCanvas key={message.canvas} canvasId={message.canvas_id}/>;
       }
 
-      messages.push(
-        <article key={message.key} className="message">
-          <div className="message_user_photo"><img src="http://placehold.it/80x60"/></div>
-          <div className="message_data">
-            <p className="message_user_name">{message.user_name}</p>
-            <p className="message_time">{message.timedate}</p>
-            {content}
-          </div>
-          <hr/>
-        </article>);
+      if (previous_user_id != message.user_id) {
+        messages.push(
+          <article key={message.key} className="message">
+            <div className="message_data">
+              <p className="message_user_name">{message.user_name}</p>
+              <p className="message_time">{message.timedate}</p>
+              {content}
+            </div>
+            <div className="message_user_photo"><img src="http://placehold.it/80x60"/></div>
+          </article>);
+        previous_user_id = message.user_id;
+      } else {
+        messages.push(
+          <article key={message.key} className="message">
+            <div className="message_data">
+              <p className="message_time">{message.timedate}</p>
+              {content}
+            </div>
+          </article>);
+      }
     }
     
     return (
