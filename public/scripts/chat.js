@@ -5,6 +5,33 @@
 
 var socket = io();
 
+var Intro = React.createClass({
+  getInitialState: function() {
+    return {inputReceived: false};
+  },
+  render: function() {
+    if (this.state.inputReceived) {
+      return(
+        <div>
+          <div id = "chatheader"><ChatHeader /></div>
+          <div id = "chatmessages"><ChatMessages /></div>
+          <div id = "chatinput"><ChatInput /></div>
+        </div>
+        );
+    }
+    return (<div>
+           <p>Welcome to the Chat app, please enter your name below</p>
+                   <input type="text"
+               onKeyPress={this.onKeyPress}/></div>);
+  },
+  onKeyPress: function(e) {
+    if(e.key == "Enter" && e.target.value.length > 0) {
+      socket.emit("join", e.target.value);
+      this.setState({inputReceived: true});
+    }
+  }
+});
+
 var ChatHeader = React.createClass({
   getInitialState: function() {
     socket.on("users", this.onSocketUsers);
@@ -182,20 +209,8 @@ var ChatInput = React.createClass({
 });
 
 ReactDOM.render(
-  <ChatHeader />,
-  document.getElementById("chatheader")
-);
-ReactDOM.render(
-  <ChatMessages />,
-  document.getElementById("chatmessages")
-);
-ReactDOM.render(
-  <ChatInput />,
-  document.getElementById("chatinput")
+  <Intro />,
+  document.getElementById("chatwrap")
 );
 
-// TODO: replace this with better intro screen.
-var person = prompt("Please enter your name", "");
-if (person != null) {;
-  socket.emit("join", person);
-}
+
