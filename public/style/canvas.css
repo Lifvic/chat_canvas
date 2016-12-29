@@ -4,6 +4,9 @@ body {
 
 canvas {
   border: 1px solid red;
+  -webkit-flex: 0 0 100%;
+  -moz-flex: 0 0 100%;
+  -ms-flex: 0 0 100%;
   flex: 0 0 100%; }
 
 #chatheader {
@@ -25,43 +28,54 @@ canvas {
   width: 100%;
   background: #fff; }
 
-.message_data {
-  flex: 0 0 80%;
-  display: flex;
-  flex-direction: row-reverse;
-  padding-left: 1rem;
-  flex-wrap: wrap; }
-
 .message {
   display: flex;
   flex-direction: row-reverse;
   align-items: flex-start;
   padding: 1rem; }
-
-.message_user_photo {
-  flex: 0 0 20%;
-  text-align: center; }
+  .message .message_data {
+    -webkit-flex: 0 0 80%;
+    -moz-flex: 0 0 80%;
+    -ms-flex: 0 0 80%;
+    flex: 0 0 80%;
+    display: flex;
+    flex-direction: row-reverse;
+    padding-left: 1rem;
+    flex-wrap: wrap; }
+    .message .message_data .message_user_name {
+      order: 1;
+      font-weight: 700;
+      -webkit-flex: 0 0 20%;
+      -moz-flex: 0 0 20%;
+      -ms-flex: 0 0 20%;
+      flex: 0 0 20%; }
+    .message .message_data .message_time {
+      order: 0;
+      -webkit-flex: 0 0 80%;
+      -moz-flex: 0 0 80%;
+      -ms-flex: 0 0 80%;
+      flex: 0 0 80%; }
+    .message .message_data .message_content {
+      -webkit-flex: 0 0 100%;
+      -moz-flex: 0 0 100%;
+      -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+      order: 1; }
+    .message .message_data .message_canvas {
+      -webkit-flex: 0 0 100%;
+      -moz-flex: 0 0 100%;
+      -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+      order: 1; }
+  .message .message_user_photo {
+    -webkit-flex: 0 0 20%;
+    -moz-flex: 0 0 20%;
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    text-align: center; }
 
 p {
   margin: .2rem 0; }
-
-.message_user_name {
-  order: 1;
-  font-weight: 700;
-  flex: 0 0 20%; }
-
-.message_time {
-  order: 0;
-  display: inline-block;
-  flex: 0 0 80%; }
-
-.message_content {
-  flex: 0 0 100%;
-  order: 1; }
-
-.message_canvas {
-  flex: 0 0 100%;
-  order: 1; }
 
 #chatinput {
   position: fixed;
